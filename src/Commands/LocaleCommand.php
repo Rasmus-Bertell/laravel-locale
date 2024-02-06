@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Bertell\Locale\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LocaleCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-locale';
 
     public $description = 'My command';
 
