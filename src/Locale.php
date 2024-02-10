@@ -5,15 +5,20 @@ namespace Bertell\Locale;
 final class Locale
 {
     public string $language;
+
     public string $script;
+
     public string $region;
+
     public string $variant;
+
     public array $extensions = [];
+
     public string $privateUse;
 
     public static function parseLocale($locale)
     {
-        $instance = new static();
+        $instance = new self();
         $locale = strtr($locale, ['_' => '-']);
 
         $parts = explode('-', $locale);
@@ -54,14 +59,14 @@ final class Locale
                 $instance->extensions[array_key_last($instance->extensions)] =
                 implode('-', [
                     $instance->extensions[array_key_last($instance->extensions)],
-                    $parts[$i]
+                    $parts[$i],
                 ]);
 
                 continue;
             }
 
             if (
-                true === empty($instance->privateUse)
+                empty($instance->privateUse) === true
                 && preg_match('/^[xX]$/', $parts[$i])
             ) {
                 $instance->privateUse = implode('-', [$parts[$i], $parts[++$i]]);

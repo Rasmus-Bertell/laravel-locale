@@ -2,9 +2,9 @@
 
 namespace Bertell\Locale;
 
+use Bertell\Locale\Commands\LocaleCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Bertell\Locale\Commands\LocaleCommand;
 
 class LocaleServiceProvider extends PackageServiceProvider
 {

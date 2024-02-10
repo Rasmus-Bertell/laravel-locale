@@ -2,9 +2,9 @@
 
 namespace Bertell\Locale\Tests;
 
+use Bertell\Locale\LocaleServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Bertell\Locale\LocaleServiceProvider;
 
 class TestCase extends Orchestra
 {
