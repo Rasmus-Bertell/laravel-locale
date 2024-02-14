@@ -43,28 +43,27 @@ final class Locale
                 continue;
             }
 
-            if (preg_match('/^[A-WY-Za-wy-z0-9]$/', $parts[$i])) {
-                $instance->extensions[] = implode('-', [$parts[$i], $parts[++$i]]);
+            // Parse extensions and private use subtags
+            if (preg_match('/^[[:alnum:]]$/', $parts[$i])) {
+                $ext = [$parts[$i]];
+
+                while ($parts[++$i] !== null && !preg_match('/^[[:alnum:]]$/', $parts[$i])) {
+                    $ext[] = $parts[$i];
+                }
+
+                $instance->extensions[] = implode('-', $ext);
 
                 continue;
             }
 
-            // Append multipart extensions
-            if (preg_match('/^[[:alnum:]]{2,}$/', $parts[$i])) {
-                $instance->extensions[array_key_last($instance->extensions)] =
-                implode('-', [
-                    $instance->extensions[array_key_last($instance->extensions)],
-                    $parts[$i]
-                ]);
+            if (strcasecmp($parts[$i], 'x') === 0) {
+                $private = [$parts[$i]];
+
+                while ($parts[++$i] !== null && !preg_match('/^[[:alnum:]]$/', $parts[$i])) {
+                    $ext[] = $parts[$i];
+                }
 
                 continue;
-            }
-
-            if (
-                true === empty($instance->privateUse)
-                && preg_match('/^[xX]$/', $parts[$i])
-            ) {
-                $instance->privateUse = implode('-', [$parts[$i], $parts[++$i]]);
             }
         }
 

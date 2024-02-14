@@ -4,7 +4,6 @@ namespace Bertell\Locale;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Bertell\Locale\Commands\LocaleCommand;
 
 class LocaleServiceProvider extends PackageServiceProvider
 {
@@ -17,9 +16,6 @@ class LocaleServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('laravel-locale')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laravel-locale_table')
-            ->hasCommand(LocaleCommand::class);
+            ->hasMigration('create_locale_table');
     }
 }
