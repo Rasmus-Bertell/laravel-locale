@@ -5,15 +5,20 @@ namespace Bertell\Locale;
 final class Locale
 {
     public string $language;
+
     public string $script;
+
     public string $region;
+
     public string $variant;
+
     public array $extensions = [];
+
     public string $privateUse;
 
     public static function parseLocale($locale)
     {
-        $instance = new static();
+        $instance = new self();
         $locale = strtr($locale, ['_' => '-']);
 
         $parts = explode('-', $locale);
