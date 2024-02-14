@@ -52,7 +52,7 @@ final class Locale
             if (preg_match('/^[[:alnum:]]$/', $parts[$i])) {
                 $ext = [$parts[$i]];
 
-                while ($parts[++$i] !== null && !preg_match('/^[[:alnum:]]$/', $parts[$i])) {
+                while ($parts[++$i] !== null && ! preg_match('/^[[:alnum:]]$/', $parts[$i])) {
                     $ext[] = $parts[$i];
                 }
 
@@ -64,7 +64,7 @@ final class Locale
             if (strcasecmp($parts[$i], 'x') === 0) {
                 $private = [$parts[$i]];
 
-                while ($parts[++$i] !== null && !preg_match('/^[[:alnum:]]$/', $parts[$i])) {
+                while ($parts[++$i] !== null && ! preg_match('/^[[:alnum:]]$/', $parts[$i])) {
                     $ext[] = $parts[$i];
                 }
 
