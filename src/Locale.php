@@ -25,7 +25,7 @@ final class Locale
 
         for ($i = 0; $i < count($parts); $i++) {
             if ($i === 0 && preg_match('/^[[:alpha:]]{2,8}$/', $parts[$i])) {
-                if (false === empty($instance->language)) {
+                if (empty($instance->language) === false) {
                     throw new \InvalidArgumentException('Duplicate language tag found');
                 }
 
@@ -48,7 +48,7 @@ final class Locale
             }
 
             if (preg_match('/^[[:alpha:]]{4}$/', $parts[$i])) {
-                if (false === empty($instance->script)) {
+                if (empty($instance->script) === false) {
                     throw new \InvalidArgumentException('Duplicate script tag found');
                 }
 
@@ -58,7 +58,7 @@ final class Locale
             }
 
             if (preg_match('/^(?:[[:alpha:]]{2}|[[:digit:]]{3})$/', $parts[$i])) {
-                if (false === empty($instance->region)) {
+                if (empty($instance->region) === false) {
                     throw new \InvalidArgumentException('Duplicate region tag found');
                 }
 
@@ -68,7 +68,7 @@ final class Locale
             }
 
             if (preg_match('/^(?:(?:[[:alnum:]]{5,8})|(?:[[:digit:]][[:alnum:]]{3}))$/', $parts[$i])) {
-                if (false === empty($instance->variant)) {
+                if (empty($instance->variant) === false) {
                     throw new \InvalidArgumentException('Duplicate variant tag found');
                 }
 
@@ -81,11 +81,11 @@ final class Locale
                 $key = $parts[$i];
                 $ext = [];
 
-                if (true === in_array($key, array_keys($instance->extensions), true)) {
+                if (in_array($key, array_keys($instance->extensions), true) === true) {
                     throw new \InvalidArgumentException('Duplicate extension found');
                 }
 
-                while (false === empty($parts[++$i]) && !preg_match('/^[[:alnum:]]$/', $parts[$i])) {
+                while (empty($parts[++$i]) === false && ! preg_match('/^[[:alnum:]]$/', $parts[$i])) {
                     $ext[] = $parts[$i];
                 }
 
@@ -97,13 +97,13 @@ final class Locale
             }
 
             if (strcasecmp($parts[$i], 'x') === 0) {
-                if (false === empty($instance->privateUse)) {
+                if (empty($instance->privateUse) === false) {
                     throw new \InvalidArgumentException('Duplicate private use tag found');
                 }
 
                 $private = [$parts[$i]];
 
-                while (false === empty($parts[++$i])) {
+                while (empty($parts[++$i]) === false) {
                     $private[] = $parts[$i];
                 }
 
