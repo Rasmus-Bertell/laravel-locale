@@ -4,17 +4,17 @@ namespace Bertell\Locale;
 
 final class Locale
 {
-    public string $language;
+    public ?string $language = null;
 
-    public string $script;
+    public ?string $script = null;
 
-    public string $region;
+    public ?string $region = null;
 
-    public string $variant;
+    public ?string $variant = null;
 
     public array $extensions = [];
 
-    public string $privateUse;
+    public ?string $privateUse = null;
 
     public static function parseLocale($locale)
     {
@@ -25,48 +25,89 @@ final class Locale
 
         for ($i = 0; $i < count($parts); $i++) {
             if ($i === 0 && preg_match('/^[[:alpha:]]{2,8}$/', $parts[$i])) {
+                if (false === empty($instance->language)) {
+                    throw new \InvalidArgumentException('Duplicate language tag found');
+                }
+
                 $instance->language = strtolower($parts[$i]);
 
+                if (strlen($parts[$i]) < 4) {
+                    for ($i++; $i < 4 && $i < count($parts); $i++) {
+                        if (preg_match('/^[[:alpha:]]{3}$/', $parts[$i])) {
+                            $instance->language = implode('-', [$instance->language, $parts[$i]]);
+                        } else {
+                            $i--;
+                            break;
+                        }
+                    }
+                }
+
                 continue;
+            } elseif ($i === 0) {
+                throw new \InvalidArgumentException("Invalid language tag: {$locale}");
             }
 
-            if ($i < 2 && preg_match('/^[[:alpha:]]{4}$/', $parts[$i])) {
+            if (preg_match('/^[[:alpha:]]{4}$/', $parts[$i])) {
+                if (false === empty($instance->script)) {
+                    throw new \InvalidArgumentException('Duplicate script tag found');
+                }
+
                 $instance->script = $parts[$i];
 
                 continue;
             }
 
-            if ($i < 3 && preg_match('/^[[:alpha:]]{2}$/', $parts[$i])) {
+            if (preg_match('/^(?:[[:alpha:]]{2}|[[:digit:]]{3})$/', $parts[$i])) {
+                if (false === empty($instance->region)) {
+                    throw new \InvalidArgumentException('Duplicate region tag found');
+                }
+
                 $instance->region = $parts[$i];
 
                 continue;
             }
 
-            if ($i < 4 && preg_match('/^[[:alnum:]]{5,8}$/', $parts[$i])) {
+            if (preg_match('/^(?:(?:[[:alnum:]]{5,8})|(?:[[:digit:]][[:alnum:]]{3}))$/', $parts[$i])) {
+                if (false === empty($instance->variant)) {
+                    throw new \InvalidArgumentException('Duplicate variant tag found');
+                }
+
                 $instance->variant = $parts[$i];
 
                 continue;
             }
 
-            // Parse extensions and private use subtags
-            if (preg_match('/^[[:alnum:]]$/', $parts[$i])) {
-                $ext = [$parts[$i]];
+            if (preg_match('/^[A-WYZa-wyz[:digit:]]$/', $parts[$i])) {
+                $key = $parts[$i];
+                $ext = [];
 
-                while ($parts[++$i] !== null && !preg_match('/^[[:alnum:]]$/', $parts[$i])) {
+                if (true === in_array($key, array_keys($instance->extensions), true)) {
+                    throw new \InvalidArgumentException('Duplicate extension found');
+                }
+
+                while (false === empty($parts[++$i]) && !preg_match('/^[[:alnum:]]$/', $parts[$i])) {
                     $ext[] = $parts[$i];
                 }
 
-                $instance->extensions[] = implode('-', $ext);
+                $i--;
+
+                $instance->extensions[$key] = implode('-', $ext);
 
                 continue;
             }
 
             if (strcasecmp($parts[$i], 'x') === 0) {
+                if (false === empty($instance->privateUse)) {
+                    throw new \InvalidArgumentException('Duplicate private use tag found');
+                }
+
                 $private = [$parts[$i]];
 
-                while ($parts[++$i] !== null && !preg_match('/^[[:alnum:]]$/', $parts[$i])) {
-                    $ext[] = $parts[$i];
+                while (false === empty($parts[++$i])) {
+                    $private[] = $parts[$i];
                 }
+
+                $instance->privateUse = implode('-', $private);
 
                 continue;
             }
