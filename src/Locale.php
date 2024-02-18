@@ -2,6 +2,8 @@
 
 namespace Bertell\Locale;
 
+use InvalidArgumentException;
+
 final class Locale
 {
     public ?string $language = null;
@@ -16,6 +18,17 @@ final class Locale
 
     public ?string $privateUse = null;
 
+    public static function isValid($locale): bool
+    {
+        try {
+            self::parseLocale($locale);
+        } catch (InvalidArgumentException) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function parseLocale($locale)
     {
         $instance = new self();
@@ -26,7 +39,7 @@ final class Locale
         for ($i = 0; $i < count($parts); $i++) {
             if ($i === 0 && preg_match('/^[[:alpha:]]{2,8}$/', $parts[$i])) {
                 if (empty($instance->language) === false) {
-                    throw new \InvalidArgumentException('Duplicate language tag found');
+                    throw new InvalidArgumentException('Duplicate language tag found');
                 }
 
                 $instance->language = strtolower($parts[$i]);
@@ -44,12 +57,12 @@ final class Locale
 
                 continue;
             } elseif ($i === 0) {
-                throw new \InvalidArgumentException("Invalid language tag: {$locale}");
+                throw new InvalidArgumentException("Invalid language tag: {$locale}");
             }
 
             if (preg_match('/^[[:alpha:]]{4}$/', $parts[$i])) {
                 if (empty($instance->script) === false) {
-                    throw new \InvalidArgumentException('Duplicate script tag found');
+                    throw new InvalidArgumentException('Duplicate script tag found');
                 }
 
                 $instance->script = $parts[$i];
@@ -59,7 +72,7 @@ final class Locale
 
             if (preg_match('/^(?:[[:alpha:]]{2}|[[:digit:]]{3})$/', $parts[$i])) {
                 if (empty($instance->region) === false) {
-                    throw new \InvalidArgumentException('Duplicate region tag found');
+                    throw new InvalidArgumentException('Duplicate region tag found');
                 }
 
                 $instance->region = $parts[$i];
@@ -69,7 +82,7 @@ final class Locale
 
             if (preg_match('/^(?:(?:[[:alnum:]]{5,8})|(?:[[:digit:]][[:alnum:]]{3}))$/', $parts[$i])) {
                 if (empty($instance->variant) === false) {
-                    throw new \InvalidArgumentException('Duplicate variant tag found');
+                    throw new InvalidArgumentException('Duplicate variant tag found');
                 }
 
                 $instance->variant = $parts[$i];
@@ -82,7 +95,7 @@ final class Locale
                 $ext = [];
 
                 if (in_array($key, array_keys($instance->extensions), true) === true) {
-                    throw new \InvalidArgumentException('Duplicate extension found');
+                    throw new InvalidArgumentException('Duplicate extension found');
                 }
 
                 while (empty($parts[++$i]) === false && ! preg_match('/^[[:alnum:]]$/', $parts[$i])) {
@@ -98,7 +111,7 @@ final class Locale
 
             if (strcasecmp($parts[$i], 'x') === 0) {
                 if (empty($instance->privateUse) === false) {
-                    throw new \InvalidArgumentException('Duplicate private use tag found');
+                    throw new InvalidArgumentException('Duplicate private use tag found');
                 }
 
                 $private = [$parts[$i]];

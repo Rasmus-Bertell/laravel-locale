@@ -233,6 +233,12 @@ $locales = [
 ];
 
 foreach ($locales as $locale => $expect) {
+    it("is valid locale: {$locale}", function () use ($locale, $expect) {
+        $valid = Bertell\Locale\Locale::isValid($locale);
+
+        expect($valid)->toBe($expect !== 'InvalidArgumentException');
+    });
+
     it("can parse a locale: {$locale}", function () use ($locale, $expect) {
         if ($expect === 'InvalidArgumentException') {
             expect(fn () => Bertell\Locale\Locale::parseLocale($locale))->toThrow(\InvalidArgumentException::class);
